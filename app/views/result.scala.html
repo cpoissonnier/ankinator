@@ -1,0 +1,23 @@
+@(searchReport: domain.SearchReport)
+
+@main() {
+  @if(flash().get("errors") != null) {
+    <div class="alert alert-warning" role="alert">
+      <p>Les mots suivants n'ont pas été inclus dans le fichier d'export :</p>
+      @flash().get("errors")
+    </div>
+  }
+    @for(searchResult <- searchReport.searchResults) {
+
+      <dl>
+        <dt>@searchResult.request (@searchResult.gender)</dt>
+        <dd>@Html(searchResult.etymology)</dd>
+        @for(meaning <- searchResult.meanings) {
+          <dd>
+            @Html(meaning)
+          </dd>
+        }
+      </dl>
+
+    }
+}
