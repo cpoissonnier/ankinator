@@ -82,14 +82,14 @@ public class LarousseScraper implements Dictionary {
         if (wordIsAnExpression(doc)) {
             return null;
         } else {
-            return doc.select(".OrigineDefinition").text();
+            return doc.select(".OrigineDefinition").html();
         }
     }
     private String extractGender(Document doc) {
         if (wordIsAnExpression(doc)) {
             return null;
         } else {
-            return doc.select(".CatgramDefinition").text();
+            return doc.select(".CatgramDefinition").html();
         }
     }
 
@@ -98,11 +98,11 @@ public class LarousseScraper implements Dictionary {
             // Récupération de l'identifiant de la locution, qui permet de récupérer la définition associée
             String locutionId = doc.baseUri().substring(doc.baseUri().lastIndexOf("#") + 1);
             return doc.select("#" + locutionId + ">.TexteLocution").stream()
-                      .map(element -> element.text())
+                      .map(element -> element.html())
                       .collect(Collectors.toList());
         } else {
             return doc.select(".DivisionDefinition").stream()
-                      .map(element -> element.text())
+                      .map(element -> element.html())
                       .collect(Collectors.toList());
         }
     }

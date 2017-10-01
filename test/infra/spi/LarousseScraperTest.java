@@ -18,8 +18,8 @@ public class LarousseScraperTest extends WithApplication {
         assertThat(word.meanings).isNotNull();
         assertThat(word.meanings).isNotEmpty();
         assertThat(word.meanings).hasSize(8);
-        assertThat(word.meanings).first().isEqualTo("Épreuve psychologique impliquant une tâche à remplir identique pour tous les sujets, des conditions d'application rigoureuses et une technique précise pour l'appréciation du succès ou de l'échec. (Il existe des tests de niveau et des tests projectifs.)");
-        assertThat(word.etymology).isEqualTo("(anglais test, épreuve, du français têt)");
+        assertThat(word.meanings).first().isEqualTo("&Eacute;preuve psychologique impliquant une t&acirc;che &agrave; remplir identique pour tous les sujets, des conditions d'application rigoureuses et une technique pr&eacute;cise pour l'appr&eacute;ciation du succ&egrave;s ou de l'&eacute;chec. (Il existe des tests de niveau et des tests projectifs.)");
+        assertThat(word.etymology).isEqualTo("(anglais <i>test, </i>&eacute;preuve, du fran&ccedil;ais t&ecirc;t)");
     }
 
     @Test
@@ -79,7 +79,7 @@ public class LarousseScraperTest extends WithApplication {
         assertThat(word.status).isEqualByComparingTo(SearchStatus.SUCCESS);
         assertThat(word.meanings).isNotNull()
                                  .hasSize(1);
-        assertThat(word.meanings).first().isEqualTo("Qui est irascible, d'humeur acariâtre : Un critique bilieux.");
+        assertThat(word.meanings).first().isEqualTo("Qui est irascible, d'humeur acari&acirc;tre&nbsp;: <span class=\"ExempleDefinition\">Un critique bilieux.</span>");
         assertThat(word.gender).isEqualTo("adjectif et nom");
     }
 }
