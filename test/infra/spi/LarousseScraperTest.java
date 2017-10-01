@@ -59,4 +59,16 @@ public class LarousseScraperTest extends WithApplication {
         assertThat(work.request).isEqualTo("bec-de-corbeau, becs-de-corbeau");
     }
 
+    @Test
+    public void when_we_search_a_word_which_is_an_expression_we_get_info_about_the_expression_and_not_the_word() {
+        LarousseScraper scraper = new LarousseScraper();
+        WordSearchResult work = scraper.search("Bleu barbeau");
+        assertThat(work.status).isEqualByComparingTo(SearchStatus.SUCCESS);
+        assertThat(work.meanings).isNotNull()
+                                 .hasSize(1);
+        assertThat(work.meanings).first().isEqualTo("bleu clair.");
+        assertThat(work.etymology).isNull();
+        assertThat(work.gender).isNull();
+        assertThat(work.request).isEqualTo("Bleu barbeau");
+    }
 }
