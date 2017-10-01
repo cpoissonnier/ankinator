@@ -15,6 +15,6 @@ public class AnkiFormatter implements Formatter {
 
     private String formatMeaningsAsHtml(WordSearchResult searchResult) {
         String meaningList = searchResult.meanings != null ? "<ul>" + searchResult.meanings.stream().map(meaning -> "<li>" + meaning + "</li>").collect(Collectors.joining("")) + "</ul>" : "";
-        return "<i>" + searchResult.etymology + "</i>" + meaningList;
+        return "<p><i>" + searchResult.gender + "</i></p>" + "<p><i>" + searchResult.etymology + "</i></p>" + meaningList;
     }
 }
