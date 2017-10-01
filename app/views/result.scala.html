@@ -1,4 +1,5 @@
 @(searchReport: domain.SearchReport)
+@import org.apache.commons.lang3.StringUtils
 
 @main(false) {
   @if(flash().get("errors") != null) {
@@ -10,13 +11,18 @@
     @for(searchResult <- searchReport.searchResults) {
 
       <dl>
-        <dt>@searchResult.request (@searchResult.gender)</dt>
-        <dd>@Html(searchResult.etymology)</dd>
-        @for(meaning <- searchResult.meanings) {
-          <dd>
+        <dt>@searchResult.request @if(StringUtils.isNotEmpty(searchResult.gender)){(@Html(searchResult.gender))}</dt>
+        <dd>@if(StringUtils.isNotEmpty(searchResult.etymology)){@Html(searchResult.etymology)}</dd>
+        @if(searchResult.meanings != null && !searchResult.meanings.isEmpty()) {
+          @for(meaning <- searchResult.meanings) {
+            <dd>
             @Html(meaning)
-          </dd>
+            </dd>
+          }
+        } else {
+          Aucune définition trouvée pour ce mot
         }
+
       </dl>
 
     }
