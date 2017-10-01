@@ -1,6 +1,6 @@
 @(searchReport: domain.SearchReport)
 
-@main() {
+@main(false) {
   @if(flash().get("errors") != null) {
     <div class="alert alert-warning" role="alert">
       <p>Les mots suivants n'ont pas été inclus dans le fichier d'export :</p>

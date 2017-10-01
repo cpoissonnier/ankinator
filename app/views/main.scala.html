@@ -4,7 +4,7 @@
  * two arguments, a `String` for the title of the page and an `Html`
  * object to insert into the body of the page.
  *@
-@()(content: Html)
+@(showHeader:Boolean)(content: Html)
 <!DOCTYPE html>
 <html lang="fr">
     <head>
@@ -25,6 +25,7 @@
     </head>
 
     <body>
+      @if(showHeader) {
 
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
             <a class="navbar-brand" href="#">Ankinator</a>
@@ -32,7 +33,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
         </nav>
-
+      }
         <div class="container">
             @content
         </div><!-- /.container -->
