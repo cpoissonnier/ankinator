@@ -69,7 +69,13 @@ public class LarousseScraper implements Dictionary {
     }
 
     private Object formatWordForRequest(String word) throws UnsupportedEncodingException {
-        return StringUtils.stripAccents(word.toLowerCase().replaceAll("’", "'").replaceAll("'", "_").replaceAll(" ", "%20"));
+        String firstTerm;
+        if (word.indexOf(",") != -1) {
+            firstTerm = word.substring(0, word.indexOf(","));
+        } else {
+            firstTerm = word;
+        }
+        return StringUtils.stripAccents(firstTerm.toLowerCase().replaceAll("’", "'").replaceAll("'", "_").replaceAll(" ", "%20"));
     }
 
     private String extractEtymology(Document doc) {

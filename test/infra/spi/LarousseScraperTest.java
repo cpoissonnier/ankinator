@@ -71,4 +71,15 @@ public class LarousseScraperTest extends WithApplication {
         assertThat(word.gender).isNull();
         assertThat(word.request).isEqualTo("Bleu barbeau");
     }
+
+    @Test
+    public void when_we_search_a_word_with_commas_to_give_feminine_way_to_write_a_word_then_the_best_word_info_is_fetched() {
+        LarousseScraper scraper = new LarousseScraper();
+        WordSearchResult word = scraper.search("Bilieux, euse");
+        assertThat(word.status).isEqualByComparingTo(SearchStatus.SUCCESS);
+        assertThat(word.meanings).isNotNull()
+                                 .hasSize(1);
+        assertThat(word.meanings).first().isEqualTo("Qui est irascible, d'humeur acariâtre : Un critique bilieux.");
+        assertThat(word.gender).isEqualTo("adjectif et nom");
+    }
 }
