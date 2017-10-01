@@ -1,8 +1,7 @@
-package domain;
+package domain.report;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class WordSearchResult {
 
@@ -21,14 +20,5 @@ public class WordSearchResult {
                 ", gender=" + gender +
                 ", etymology='" + etymology + '\'' +
                 '}';
-    }
-
-    public String exportAsAnkiLine() {
-        return request + "\t" + exportAsHtml() + "\t";
-    }
-
-    public String exportAsHtml() {
-        String meaningList = meanings != null ? "<ul>" + meanings.stream().map(meaning -> "<li>" + meaning + "</li>").collect(Collectors.joining("")) + "</ul>" : "";
-        return "<i>" + etymology + "</i>" + meaningList;
     }
 }

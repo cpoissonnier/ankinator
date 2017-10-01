@@ -1,5 +1,5 @@
 import com.google.inject.AbstractModule;
-import domain.Dictionary;
+import domain.dictionary.Dictionary;
 import infra.spi.LarousseScraper;
 import play.libs.akka.AkkaGuiceSupport;
 

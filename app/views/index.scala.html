@@ -1,26 +1,47 @@
 @()
 
-@main(true) {
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1 class="display-3">Bienvenue sur Ankinator</h1>
-            <p class="lead">Mets la liste de tous les mots dont tu souhaites récupérer la définition dans le champ ci-dessous, en mettant uniquement un mot par ligne</p>
-        </div>
+@scripts = {
+  <script>
+    $(document).ready(function () {
+      $('#btn-html-report').click(function (event) {
+        $('#outputType').val("html");
+        console.log("HTML");
+        $('form').submit();
+      });
+
+      $('#btn-anki-report').click(function (event) {
+        $('#outputType').val("anki");
+        console.log("ANKI");
+        $('form').submit();
+      });
+    });
+  </script>
+}
+
+@main(true, scripts) {
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-3">Bienvenue sur Ankinator</h1>
+      <p class="lead">
+        Mets la liste de tous les mots dont tu souhaites récupérer la définition dans le champ ci-dessous, en mettant uniquement un mot par ligne</p>
     </div>
+  </div>
 
 
-    @if(flash().get("errors") != null) {
-        <div class="alert alert-warning" role="alert">
-            <p>Les mots suivants n'ont pas été inclus dans le fichier d'export :</p>
-            @flash().get("errors")
-        </div>
-    }
+  @if(flash().get("errors") != null) {
+    <div class="alert alert-warning" role="alert">
+      <p>Les mots suivants n'ont pas été inclus dans le fichier d'export :</p>
+      @flash().get("errors")
+    </div>
+  }
 
-    @helper.form(action = helper.CSRF(infra.api.routes.WordController.fetchInfos()), 'id -> "form") {
-        <div class="form-group">
-            <label for="input-words">Liste des mots à récupérer</label>
-            <textarea id="input-words" class="form-control" rows="20" name="words"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary btn-lg">Valider</button>
-    }
+  @helper.form(action = helper.CSRF(infra.api.routes.WordController.generateReport()), 'id -> "form") {
+    <div class="form-group">
+      <label for="input-words">Liste des mots à récupérer</label>
+      <input id="outputType" type="hidden" name="outputType">
+      <textarea id="input-words" class="form-control" rows="20" name="words"></textarea>
+    </div>
+    <button id="btn-html-report" type="button" class="btn btn-primary btn-lg">Voir les définitions</button>
+    <button id="btn-anki-report" type="button" class="btn btn-primary btn-lg">Télécharger fichier ANKI</button>
+  }
 }

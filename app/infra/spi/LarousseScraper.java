@@ -1,9 +1,9 @@
 package infra.spi;
 
 
-import domain.Dictionary;
-import domain.SearchStatus;
-import domain.WordSearchResult;
+import domain.dictionary.Dictionary;
+import domain.report.SearchStatus;
+import domain.report.WordSearchResult;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,7 +11,6 @@ import play.Logger;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +27,7 @@ public class LarousseScraper implements Dictionary {
         try {
 
 
-            URL url = new URL(ENDPOINT + formatWordForRequest(word));
-            Document doc = Jsoup.connect(url.toString()).get();
+            Document doc = Jsoup.connect(ENDPOINT + formatWordForRequest(word)).timeout(10000).get();
 
             wordHasBeenFound = wordHasBeenFound(doc);
             if (wordHasBeenFound) {

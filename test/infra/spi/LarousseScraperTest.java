@@ -1,7 +1,7 @@
 package infra.spi;
 
-import domain.SearchStatus;
-import domain.WordSearchResult;
+import domain.report.SearchStatus;
+import domain.report.WordSearchResult;
 import org.junit.Test;
 import play.test.WithApplication;
 

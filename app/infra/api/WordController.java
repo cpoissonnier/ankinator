@@ -1,24 +1,23 @@
 package infra.api;
 
-import domain.Dictionary;
-import domain.SearchReport;
-import domain.SearchStatus;
-import domain.WordSearchResult;
-import infra.spi.LarousseScraper;
+import domain.dictionary.Dictionary;
+import domain.report.ReportAdapter;
+import domain.report.SearchReport;
+import domain.report.SearchStatus;
+import domain.report.WordSearchResult;
+import infra.adapter.AnkiFormatter;
+import infra.adapter.AnkiFileAdapter;
+import infra.adapter.WebReportAdapter;
+import infra.forms.ReportForm;
 import play.Logger;
+import play.data.Form;
 import play.data.FormFactory;
-import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class WordController extends Controller {
@@ -29,33 +28,72 @@ public class WordController extends Controller {
     @Inject
     Dictionary dictionary;
 
-    public Result get(String word) {
-        WordSearchResult wordInfo = dictionary.search(word);
+    @Inject
+    AnkiFormatter ankiFormatter;
 
-        return ok(wordInfo.exportAsHtml());
+    @Inject
+    AnkiFileAdapter ankiFileAdapter;
+
+    @Inject
+    WebReportAdapter webReportAdapter;
+
+    public Result generateReport() {
+        Form<ReportForm> form = formFactory.form(ReportForm.class).bindFromRequest();
+
+        if (form.hasErrors()) {
+            return badRequest();
+        }
+
+        ReportForm reportForm = form.get();
+        if ("anki".equals(reportForm.getOutputType())) {
+            return generateAnkiReport();
+        } else if ("html".equals(reportForm.getOutputType())) {
+            return generateHtmlReport();
+        } else {
+            return badRequest();
+        }
     }
 
-    public Result fetchInfos() throws UnsupportedEncodingException {
+    public Result get(String word) {
+        WordSearchResult wordInfo = dictionary.search(word);
+        return ok(ankiFormatter.format(wordInfo));
+    }
+
+    public Result generateAnkiReport() {
+        return generateGenericReport(ankiFileAdapter);
+    }
+
+    public Result generateHtmlReport() {
+        return generateGenericReport(webReportAdapter);
+    }
+
+    private Result generateGenericReport(ReportAdapter adapter) {
+        List<String> words = getWordsFromRequest();
+        SearchReport report = generateSearchReport(words, dictionary);
+        handleErrors(report);
+
+        return adapter.generateReport(report);
+    }
+
+
+
+    private List<String> getWordsFromRequest() {
         // FIXME : corriger l'encoding pour gérer le cas relou du Æa à la place du '
-        String words = formFactory.form().bindFromRequest().get("words").replaceAll("Æa", "'");
-        String[] splittedWords = words.split("\n");
+        String words = formFactory.form().bindFromRequest().get("words").replaceAll("Æa", "'").replaceAll("\r", "");
+        return Arrays.asList(words.split("\n"));
 
-        Logger.info("Fetching info for {} words : {}", splittedWords.length, words);
+    }
 
+    private SearchReport generateSearchReport(List<String> words, Dictionary dictionary) {
         SearchReport report = new SearchReport();
-        report.searchResults = Arrays.asList(splittedWords)
-                                     .parallelStream()
-                                     .map(word -> word.replaceAll("\r", ""))
-                                     .map(word -> dictionary.search(word))
-                                     .collect(Collectors.toList());
+        report.searchResults = words.parallelStream()
+                                    .map(word -> dictionary.search(word))
+                                    .collect(Collectors.toList());
+        return report;
+    }
 
-        String fileContent = report.searchResults.stream()
-                                                 .map(searchResult -> searchResult.exportAsAnkiLine())
-                                                 .collect(Collectors.joining("\n"));
-
-        InputStream inputStream = new ByteArrayInputStream(fileContent.toString().getBytes("UTF-8"));
-
-        List<WordSearchResult> errors = report.searchResults.stream()
+    private void handleErrors(SearchReport searchReport) {
+        List<WordSearchResult> errors = searchReport.searchResults.stream()
                                                             .filter(wordSearchResult -> wordSearchResult.status != SearchStatus.SUCCESS)
                                                             .collect(Collectors.toList());
 
@@ -67,10 +105,7 @@ public class WordController extends Controller {
             Logger.info("Les mots suivants n'ont pas été inclus dans le résultat (erreur ou mot inexistant) : {}", requestsInError);
             flash("errors", requestsInError);
         }
-
-//        return ok(views.html.result.render(report));
-//
-        response().setHeader("Content-disposition", "attachment; filename=export.txt");
-        return ok(inputStream).as(("application/x-download"));
     }
+
+
 }
