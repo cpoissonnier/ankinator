@@ -50,4 +50,13 @@ public class LarousseScraperTest extends WithApplication {
         assertThat(work.etymology).isEmpty();
     }
 
+    @Test
+    public void when_get_a_word_with_weird_plural_get_plural_as_request() {
+        LarousseScraper scraper = new LarousseScraper();
+        WordSearchResult work = scraper.search("bec-de-corbeau");
+        assertThat(work.status).isEqualByComparingTo(SearchStatus.SUCCESS);
+        assertThat(work.meanings).isNotNull();
+        assertThat(work.request).isEqualTo("bec-de-corbeau, becs-de-corbeau");
+    }
+
 }

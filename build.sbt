@@ -19,6 +19,7 @@ libraryDependencies ++= {
     javaForms,
     ehcache,
     "org.assertj" % "assertj-core" % "3.8.0" % "test",
+    "org.apache.commons" % "commons-text" % "1.1",
     "org.jsoup" % "jsoup" % "1.7.2"
   )
 }
