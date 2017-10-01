@@ -44,7 +44,7 @@ public class WordController extends Controller {
 
         SearchReport report = new SearchReport();
         report.searchResults = Arrays.asList(splittedWords)
-                                     .stream()
+                                     .parallelStream()
                                      .map(word -> word.replaceAll("\r", ""))
                                      .map(word -> dictionary.search(word))
                                      .collect(Collectors.toList());
